@@ -2,8 +2,7 @@ module alu (
     input [31:0] a,          // op A
     input [31:0] b,          // op B
     input [3:0] alu_control, // ALU control signal
-    output reg [31:0] result,// ALU result
-    output zero              // zero flag
+    output reg [31:0] result// ALU result
 );
 
 parameter ADD  = 4'b0000;
@@ -34,7 +33,5 @@ always @(*) begin
         default: result = 32'h00000000;
     endcase
 end
-
-assign zero = (result == 32'h00000000);
 
 endmodule

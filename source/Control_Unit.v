@@ -62,6 +62,7 @@ always @(*) begin
         7'b1100011: begin // Branch instructions (BEQ, BNE, BLT, BGE, BLTU, BGEU)
             branch = 1'b1;
             alu_op = ALU_SUB;    // 比较使用减法
+            //先默认分支不跳转
         end
         
         7'b1101111: begin // JAL
