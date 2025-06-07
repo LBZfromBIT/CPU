@@ -13,6 +13,7 @@ module control_unit (
     output reg mem_to_reg,     // 写回寄存器数据选择（0:ALU结果, 1:内存数据）
     output reg [1:0] alu_op,   // ALU操作类型
     output reg pc_src          // PC来源选择（0：顺序执行 1：PC+立即数）
+);
 
 // ALU操作类型定义
 parameter ALU_ADD  = 2'b00;  // Load/Store指令使用加法计算地址
