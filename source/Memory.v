@@ -5,13 +5,13 @@ module instruction_memory (
     output [31:0] instruction
 );
 
-reg [31:0] imem [0:1023];  // æŒ‡ä»¤å­˜å‚¨å™¨
+reg [31:0] imem [0:1023];  // Ö¸Áî´æ´¢Æ÷
 
 integer i;
 
-// åˆå§‹åŒ–æŒ‡ä»¤å­˜å‚¨å™¨
+// ³õÊ¼»¯Ö¸Áî´æ´¢Æ÷
 initial begin
-    // åˆå§‹åŒ–æ‰€æœ‰ä½ç½®ä¸ºNOPæŒ‡ä»¤
+    // ³õÊ¼»¯ËùÓĞÎ»ÖÃÎªNOPÖ¸Áî
     for (i = 0; i < 1024; i = i + 1) begin
         imem[i] = 32'h00000013;  // NOP (addi x0, x0, 0)
     end
@@ -21,16 +21,16 @@ initial begin
     imem[2]  = 32'h00400313;  // addi x6,x0,4
     imem[3]  = 32'h0462da63;  // bge x5,x6,exit_outer
     imem[4]  = 32'h00000393;  // addi x7,x0,0
-    imem[5]  = 32'h40530e33;  // sub x28,x6,x5        <- ä¿®æ­£
+    imem[5]  = 32'h40530e33;  // sub x28,x6,x5        <- ĞŞÕı
     imem[6]  = 32'h05c3d063;  // bge x7,x28,exit_inner
     imem[7]  = 32'h00239e93;  // slli x29,x7,2
-    imem[8]  = 32'h01d40eb3;  // add x29,x8,x29       <- ä¿®æ­£
+    imem[8]  = 32'h01d40eb3;  // add x29,x8,x29       <- ĞŞÕı
     imem[9]  = 32'h000eaf03;  // lw x30,0(x29)
     imem[10] = 32'h00138f93;  // addi x31,x7,1
     imem[11] = 32'h002f9f93;  // slli x31,x31,2
-    imem[12] = 32'h01f40fb3;  // add x31,x8,x31       <- ä¿®æ­£
-    imem[13] = 32'h000faf83;  // lw x31,0(x31)        <- ä¿®æ­£
-    imem[14] = 32'h01ff5c63;  // bge x30,x31,skip_swap <- ä¿®æ­£
+    imem[12] = 32'h01f40fb3;  // add x31,x8,x31       <- ĞŞÕı
+    imem[13] = 32'h000faf83;  // lw x31,0(x31)        <- ĞŞÕı
+    imem[14] = 32'h01ff5c63;  // bge x30,x31,skip_swap <- ĞŞÕı
     imem[15] = 32'h01fea023;  // sw x31,0(x29)
     imem[16] = 32'h00138e13;  // addi x28,x7,1
     imem[17] = 32'h002e1e13;  // slli x28,x28,2
@@ -42,10 +42,10 @@ initial begin
     imem[23] = 32'hfb1ff06f;  // jal x0,outer_loop
     imem[24] = 32'h0000006f;  // jal x0,exit_outer
     
-    $display("æŒ‡ä»¤å­˜å‚¨å™¨åˆå§‹åŒ–å®Œæˆ");
+    $display("Ö¸Áî´æ´¢Æ÷³õÊ¼»¯Íê³É");
 end
 
-// æŒ‰å­—å¯¹é½è®¿é—®
+// °´×Ö¶ÔÆë·ÃÎÊ
 assign instruction = imem[pc[31:2]];
 
 endmodule
@@ -60,25 +60,25 @@ module data_memory (
     output reg [31:0] read_data
 );
 
-reg [31:0] dmem [0:1023];  // æ•°æ®å­˜å‚¨å™¨
+reg [31:0] dmem [0:1023];  // Êı¾İ´æ´¢Æ÷
 
 integer j;
 
-// åˆå§‹åŒ–æ•°æ®å­˜å‚¨å™¨
+// ³õÊ¼»¯Êı¾İ´æ´¢Æ÷
 initial begin
-    // åˆå§‹åŒ–æ‰€æœ‰ä½ç½®ä¸º0
+    // ³õÊ¼»¯ËùÓĞÎ»ÖÃÎª0
     for (j = 0; j < 1024; j = j + 1) begin
         dmem[j] = 32'h00000000;
     end
     
-    // åœ¨åœ°å€0x100å¤„åˆå§‹åŒ–æ•°ç»„æ•°æ®
-    dmem[64] = 32'h00000004;  // array[0] = 4  (åœ°å€0x100 = 256/4 = 64)
-    dmem[65] = 32'h00000005;  // array[1] = 5  (åœ°å€0x104 = 260/4 = 65)
-    dmem[66] = 32'h00000003;  // array[2] = 3  (åœ°å€0x108 = 264/4 = 66)
-    dmem[67] = 32'h00000001;  // array[3] = 1  (åœ°å€0x10C = 268/4 = 67)
-    dmem[68] = 32'h00000002;  // array[4] = 2  (åœ°å€0x110 = 272/4 = 68)
+    // ÔÚµØÖ·0x100´¦³õÊ¼»¯Êı×éÊı¾İ
+    dmem[64] = 32'h00000004;  // array[0] = 4  (µØÖ·0x100 = 256/4 = 64)
+    dmem[65] = 32'h00000005;  // array[1] = 5  (µØÖ·0x104 = 260/4 = 65)
+    dmem[66] = 32'h00000003;  // array[2] = 3  (µØÖ·0x108 = 264/4 = 66)
+    dmem[67] = 32'h00000001;  // array[3] = 1  (µØÖ·0x10C = 268/4 = 67)
+    dmem[68] = 32'h00000002;  // array[4] = 2  (µØÖ·0x110 = 272/4 = 68)
     
-    $display("æ•°æ®å­˜å‚¨å™¨åˆå§‹åŒ–å®Œæˆ");
+    $display("Êı¾İ´æ´¢Æ÷³õÊ¼»¯Íê³É");
     $display("dmem[64] = %d", dmem[64]);
     $display("dmem[65] = %d", dmem[65]);
     $display("dmem[66] = %d", dmem[66]);
@@ -86,10 +86,10 @@ initial begin
     $display("dmem[68] = %d", dmem[68]);
 end
 
-// æŒ‰å­—å¯¹é½çš„åœ°å€
+// °´×Ö¶ÔÆëµÄµØÖ·
 wire [31:0] word_address = address[31:2];
 
-// è¯»æ“ä½œ
+// ¶Á²Ù×÷
 always @(*) begin
     if (mem_read) begin
         if (word_address < 1024) begin
@@ -102,7 +102,7 @@ always @(*) begin
     end
 end
 
-// å†™æ“ä½œ
+// Ğ´²Ù×÷
 always @(posedge clk) begin
     if (mem_write) begin
         if (word_address < 1024) begin

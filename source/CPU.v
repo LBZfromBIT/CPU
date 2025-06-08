@@ -402,7 +402,7 @@ branch_control branch_ctrl (
     .branch(ex_branch),           // 是否为分支指令
     .funct3(ex_funct3),           // 分支类型 (BEQ, BNE, BLT等)
     .rs1_data(ex_alu_input_a),    // 比较数据1 (转发后)
-    .rs2_data(ex_alu_input_b_temp), // 比较数据2 (转发后)
+    .rs2_data(ex_alu_input_b_temp), // 比较数据2 (转发后的rs2，不是立即数)
     .branch_taken(branch_taken)   // 分支是否成立
 );
 
@@ -525,9 +525,9 @@ hazard_detection_unit hazard_detect (
     .ex_rd(ex_rd_addr),
     .ex_mem_read(ex_mem_read),
     
-    // 输入：分支跳转信号
-    .branch_taken(mem_branch_taken),
-    .jump(mem_jump),
+    // 输入：分支跳转信号（来自EX阶段，提前检测）
+    .branch_taken(branch_taken),
+    .jump(ex_jump),
     
     // 输出：流水线控制信号
     .pc_write(pc_write),          // 控制PC是否更新
