@@ -2,25 +2,25 @@
 
 module cpu_testbench();
 
-// Ê±ÖÓºÍ¸´Î»ĞÅºÅ
+// æ—¶é’Ÿå’Œå¤ä½ä¿¡å·
 reg clk;
 reg rst;
 
-// Ö¸Áî´æ´¢Æ÷½Ó¿Ú
+// æŒ‡ä»¤å­˜å‚¨å™¨æ¥å£
 wire [31:0] imem_addr;
 wire [31:0] imem_data;
 
-// Êı¾İ´æ´¢Æ÷½Ó¿Ú
+// æ•°æ®å­˜å‚¨å™¨æ¥å£
 wire [31:0] dmem_addr;
 wire [31:0] dmem_wdata;
 wire dmem_we;
 wire [31:0] dmem_rdata;
 
-// µ÷ÊÔ½Ó¿Ú
+// è°ƒè¯•æ¥å£
 wire [31:0] debug_pc;
 wire [31:0] debug_instruction;
 
-// ÊµÀı»¯CPU
+// å®ä¾‹åŒ–CPU
 risc_v_cpu cpu_inst (
     .clk(clk),
     .rst(rst),
@@ -34,69 +34,69 @@ risc_v_cpu cpu_inst (
     .debug_instruction(debug_instruction)
 );
 
-// ÊµÀı»¯Ö¸Áî´æ´¢Æ÷
+// å®ä¾‹åŒ–æŒ‡ä»¤å­˜å‚¨å™¨
 instruction_memory imem_inst (
     .pc(imem_addr),
     .instruction(imem_data)
 );
 
-// ÊµÀı»¯Êı¾İ´æ´¢Æ÷
+// å®ä¾‹åŒ–æ•°æ®å­˜å‚¨å™¨
 data_memory dmem_inst (
     .clk(clk),
-    .mem_read(1'b1),  // ×ÜÊÇÔÊĞí¶Á
+    .mem_read(1'b1),  // æ€»æ˜¯å…è®¸è¯»
     .mem_write(dmem_we),
     .address(dmem_addr),
     .write_data(dmem_wdata),
     .read_data(dmem_rdata)
 );
 
-// Ê±ÖÓÉú³É
+// æ—¶é’Ÿç”Ÿæˆ
 initial begin
     clk = 0;
-    forever #5 clk = ~clk;  // 10nsÖÜÆÚ£¬100MHz
+    forever #5 clk = ~clk;  // 10nså‘¨æœŸï¼Œ100MHz
 end
 
-// ¸´Î»ºÍ²âÊÔ¿ØÖÆ
+// å¤ä½å’Œæµ‹è¯•æ§åˆ¶
 initial begin
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     rst = 1;
     #20;
     rst = 0;
     
-    // µÈ´ı¸ü³¤Ê±¼äÈ·±£³ÌĞòÖ´ĞĞÍê³É
+    // ç­‰å¾…æ›´é•¿æ—¶é—´ç¡®ä¿ç¨‹åºæ‰§è¡Œå®Œæˆ
     #5000;
     
-    // ¼ì²éÅÅĞò½á¹û
-    $display("=== ÅÅĞò½á¹û¼ì²é ===");
-    $display("Ô­Ê¼Êı¾İ: 4, 5, 3, 1, 2");
-    $display("ÅÅĞòºóÊı¾İ:");
-    $display("array[0] = %d (µØÖ·0x100)", dmem_inst.dmem[64]);
-    $display("array[1] = %d (µØÖ·0x104)", dmem_inst.dmem[65]);
-    $display("array[2] = %d (µØÖ·0x108)", dmem_inst.dmem[66]);
-    $display("array[3] = %d (µØÖ·0x10C)", dmem_inst.dmem[67]);
-    $display("array[4] = %d (µØÖ·0x110)", dmem_inst.dmem[68]);
+    // æ£€æŸ¥æ’åºç»“æœ
+    $display("=== æ’åºç»“æœæ£€æŸ¥ ===");
+    $display("åŸå§‹æ•°æ®: 4, 5, 3, 1, 2");
+    $display("æ’åºåæ•°æ®:");
+    $display("array[0] = %d (åœ°å€0x100)", dmem_inst.dmem[64]);
+    $display("array[1] = %d (åœ°å€0x104)", dmem_inst.dmem[65]);
+    $display("array[2] = %d (åœ°å€0x108)", dmem_inst.dmem[66]);
+    $display("array[3] = %d (åœ°å€0x10C)", dmem_inst.dmem[67]);
+    $display("array[4] = %d (åœ°å€0x110)", dmem_inst.dmem[68]);
     
     $finish;
 end
 
-// ÔÚtestbenchÖĞÌí¼Ó¸ü¶à¼à¿Ø
+// åœ¨testbenchä¸­æ·»åŠ æ›´å¤šç›‘æ§
 initial begin
-    // ¼à¿Ø´æ´¢Æ÷·ÃÎÊ
+    // ç›‘æ§å­˜å‚¨å™¨è®¿é—®
     $monitor("Time: %0t, PC: 0x%h, Inst: 0x%h, dmem_addr: 0x%h, dmem_we: %b, dmem_wdata: %d", 
              $time, debug_pc, debug_instruction, dmem_addr, dmem_we, dmem_wdata);
 end
 
-// ¼à¿Ø¼Ä´æÆ÷±ä»¯
+// ç›‘æ§å¯„å­˜å™¨å˜åŒ–
 always @(posedge clk) begin
     if (!rst && debug_pc != 0) begin
         $display("[Cycle] PC=0x%h, x5=%d, x7=%d", 
                  debug_pc, 
-                 cpu_inst.reg_file.registers[5],   // Íâ²ãÑ­»·
-                 cpu_inst.reg_file.registers[7]);  // ÄÚ²ãÑ­»·
+                 cpu_inst.reg_file.registers[5],   // å¤–å±‚å¾ªç¯
+                 cpu_inst.reg_file.registers[7]);  // å†…å±‚å¾ªç¯
     end
 end
 
-// ¼à¿ØÊı¾İ´æ´¢Æ÷±ä»¯
+// ç›‘æ§æ•°æ®å­˜å‚¨å™¨å˜åŒ–
 always @(posedge clk) begin
     if (dmem_we) begin
         $display("[Memory] Write to addr=0x%h, data=%d at time %0t", 

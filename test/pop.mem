@@ -1,31 +1,32 @@
+// 冒泡排序程序 - 内存映射（起始地址：0x00000000）
 main:
-    0x10000413;  // addi x8,x0,0x100
-    0x00000293;  // addi x5,x0,0
-    0x00400313;  // addi x6,x0,4
+    0x00000000: 0x10000413;  // addi x8,x0,0x100      # 设置数组基地址
+    0x00000004: 0x00000293;  // addi x5,x0,0          # i = 0 (外层循环计数器)
+    0x00000008: 0x00400313;  // addi x6,x0,4          # n = 4 (数组长度)
 outer_loop:
-    0x0462da63;  // bge x5,x6,exit_outer
-    0x00000393;  // addi x7,x0,0
+    0x0000000C: 0x0462da63;  // bge x5,x6,exit_outer  # if (i >= n) goto exit_outer
+    0x00000010: 0x00000393;  // addi x7,x0,0          # j = 0 (内层循环计数器)
 inner_loop:
-    0x40530e33;  // sub x28,x6,x5       
-    0x05c3d063;  // bge x7,x28,exit_inner
-    0x00239e93;  // slli x29,x7,2
-    0x01d40eb3;  // add x29,x8,x29     
-    0x000eaf03;  // lw x30,0(x29)
-    0x00138f93;  // addi x31,x7,1
-    0x002f9f93;  // slli x31,x31,2
-    0x01f40fb3;  // add x31,x8,x31     
-    0x000faf83;  // lw x31,0(x31)        
-    0x01ff5c63;  // bge x30,x31,skip_swap 
-    0x01fea023;  // sw x31,0(x29)
-    0x00138e13;  // addi x28,x7,1
-    0x002e1e13;  // slli x28,x28,2
-    0x01c40e33;  // add x28,x8,x28
-    0x01ee2023;  // sw x30,0(x28)
-skip_swap：
-    0x00138393;  // addi x7,x7,1
-    0xfc1ff06f;  // jal x0,inner_loop
+    0x00000014: 0x40530e33;  // sub x28,x6,x5         # x28 = n - i
+    0x00000018: 0x05c3d063;  // bge x7,x28,exit_inner # if (j >= n-i) goto exit_inner
+    0x0000001C: 0x00239e93;  // slli x29,x7,2         # x29 = j * 4 (字节偏移)
+    0x00000020: 0x01d40eb3;  // add x29,x8,x29        # x29 = 数组基地址 + j*4
+    0x00000024: 0x000eaf03;  // lw x30,0(x29)         # x30 = arr[j]
+    0x00000028: 0x00138f93;  // addi x31,x7,1         # x31 = j + 1
+    0x0000002C: 0x002f9f93;  // slli x31,x31,2        # x31 = (j+1) * 4
+    0x00000030: 0x01f40fb3;  // add x31,x8,x31        # x31 = 数组基地址 + (j+1)*4
+    0x00000034: 0x000faf83;  // lw x31,0(x31)         # x31 = arr[j+1]
+    0x00000038: 0x01ff5c63;  // bge x30,x31,skip_swap # if (arr[j] >= arr[j+1]) goto skip_swap
+    0x0000003C: 0x01fea023;  // sw x31,0(x29)         # arr[j] = arr[j+1]
+    0x00000040: 0x00138e13;  // addi x28,x7,1         # x28 = j + 1
+    0x00000044: 0x002e1e13;  // slli x28,x28,2        # x28 = (j+1) * 4
+    0x00000048: 0x01c40e33;  // add x28,x8,x28        # x28 = 数组基地址 + (j+1)*4
+    0x0000004C: 0x01ee2023;  // sw x30,0(x28)         # arr[j+1] = arr[j]
+skip_swap:
+    0x00000050: 0x00138393;  // addi x7,x7,1          # j++
+    0x00000054: 0xfc1ff06f;  // jal x0,inner_loop     # goto inner_loop
 exit_inner:
-    0x00128293;  // addi x5,x5,1
-    0xfb1ff06f;  // jal x0,outer_loop
-exit_outer：
-    0x0000006f;  // jal x0,exit_outer
+    0x00000058: 0x00128293;  // addi x5,x5,1          # i++
+    0x0000005C: 0xfb1ff06f;  // jal x0,outer_loop     # goto outer_loop
+exit_outer:
+    0x00000060: 0x0000006f;  // jal x0,exit_outer     # 无限循环

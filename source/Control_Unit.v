@@ -3,26 +3,26 @@ module control_unit (
     input [2:0] funct3,
     input [6:0] funct7,
     
-    // Êä³ö¿ØÖÆĞÅºÅ
-    output reg reg_write,      // ¼Ä´æÆ÷Ğ´Ê¹ÄÜ
-    output reg mem_read,       // ÄÚ´æ¶ÁÊ¹ÄÜ
-    output reg mem_write,      // ÄÚ´æĞ´Ê¹ÄÜ
-    output reg branch,         // ·ÖÖ§Ö¸Áî
-    output reg jump,           // Ìø×ªÖ¸Áî
-    output reg alu_src,        // ALUµÚ¶ş¸ö²Ù×÷ÊıÑ¡Ôñ£¨0:¼Ä´æÆ÷, 1:Á¢¼´Êı£©
-    output reg mem_to_reg,     // Ğ´»Ø¼Ä´æÆ÷Êı¾İÑ¡Ôñ£¨0:ALU½á¹û, 1:ÄÚ´æÊı¾İ£©
-    output reg [1:0] alu_op,   // ALU²Ù×÷ÀàĞÍ
-    output reg pc_src          // PCÀ´Ô´Ñ¡Ôñ£¨0£ºË³ĞòÖ´ĞĞ 1£ºPC+Á¢¼´Êı£©
+    // è¾“å‡ºæ§åˆ¶ä¿¡å·
+    output reg reg_write,      // å¯„å­˜å™¨å†™ä½¿èƒ½
+    output reg mem_read,       // å†…å­˜è¯»ä½¿èƒ½
+    output reg mem_write,      // å†…å­˜å†™ä½¿èƒ½
+    output reg branch,         // åˆ†æ”¯æŒ‡ä»¤
+    output reg jump,           // è·³è½¬æŒ‡ä»¤
+    output reg alu_src,        // ALUç¬¬äºŒä¸ªæ“ä½œæ•°é€‰æ‹©ï¼ˆ0:å¯„å­˜å™¨, 1:ç«‹å³æ•°ï¼‰
+    output reg mem_to_reg,     // å†™å›å¯„å­˜å™¨æ•°æ®é€‰æ‹©ï¼ˆ0:ALUç»“æœ, 1:å†…å­˜æ•°æ®ï¼‰
+    output reg [1:0] alu_op,   // ALUæ“ä½œç±»å‹
+    output reg pc_src          // PCæ¥æºé€‰æ‹©ï¼ˆ0ï¼šé¡ºåºæ‰§è¡Œ 1ï¼šPC+ç«‹å³æ•°ï¼‰
 );
 
-// ALU²Ù×÷ÀàĞÍ¶¨Òå
-parameter ALU_ADD  = 2'b00;  // Load/StoreÖ¸ÁîÊ¹ÓÃ¼Ó·¨¼ÆËãµØÖ·
-parameter ALU_SUB  = 2'b01;  // BranchÖ¸ÁîÊ¹ÓÃ¼õ·¨±È½Ï
-parameter ALU_FUNC = 2'b10;  // R-typeÖ¸Áî£¬¸ù¾İfunct×Ö¶ÎÈ·¶¨
-parameter ALU_IMM  = 2'b11;  // I-typeËãÊõÖ¸Áî
+// ALUæ“ä½œç±»å‹å®šä¹‰
+parameter ALU_ADD  = 2'b00;  // Load/StoreæŒ‡ä»¤ä½¿ç”¨åŠ æ³•è®¡ç®—åœ°å€
+parameter ALU_SUB  = 2'b01;  // BranchæŒ‡ä»¤ä½¿ç”¨å‡æ³•æ¯”è¾ƒ
+parameter ALU_FUNC = 2'b10;  // R-typeæŒ‡ä»¤ï¼Œæ ¹æ®functå­—æ®µç¡®å®š
+parameter ALU_IMM  = 2'b11;  // I-typeç®—æœ¯æŒ‡ä»¤
 
 always @(*) begin
-    // Ä¬ÈÏÖµ
+    // é»˜è®¤å€¼
     reg_write   = 1'b0;
     mem_read    = 1'b0;
     mem_write   = 1'b0;
@@ -36,34 +36,34 @@ always @(*) begin
     case (opcode)
         7'b0110011: begin // R-type instructions (ADD, SUB, AND, OR, XOR, SLT, SLTU, SLL, SRL, SRA)
             reg_write = 1'b1;
-            alu_src   = 1'b0;  // Ê¹ÓÃ¼Ä´æÆ÷Êı¾İ
+            alu_src   = 1'b0;  // ä½¿ç”¨å¯„å­˜å™¨æ•°æ®
             alu_op    = ALU_FUNC;
         end
         
         7'b0010011: begin // I-type arithmetic (ADDI, SLTI, SLTIU, XORI, ORI, ANDI, SLLI, SRLI, SRAI)
             reg_write = 1'b1;
-            alu_src   = 1'b1;  // Ê¹ÓÃÁ¢¼´Êı
+            alu_src   = 1'b1;  // ä½¿ç”¨ç«‹å³æ•°
             alu_op    = ALU_IMM;
         end
         
         7'b0000011: begin // Load instructions (LW, LH, LB, LHU, LBU)
             reg_write  = 1'b1;
             mem_read   = 1'b1;
-            alu_src    = 1'b1;  // µØÖ·¼ÆËãÊ¹ÓÃÁ¢¼´Êı
-            mem_to_reg = 1'b1;  // Ğ´»ØÄÚ´æÊı¾İ
+            alu_src    = 1'b1;  // åœ°å€è®¡ç®—ä½¿ç”¨ç«‹å³æ•°
+            mem_to_reg = 1'b1;  // å†™å›å†…å­˜æ•°æ®
             alu_op     = ALU_ADD;
         end
         
         7'b0100011: begin // Store instructions (SW, SH, SB)
             mem_write = 1'b1;
-            alu_src   = 1'b1;   // µØÖ·¼ÆËãÊ¹ÓÃÁ¢¼´Êı
+            alu_src   = 1'b1;   // åœ°å€è®¡ç®—ä½¿ç”¨ç«‹å³æ•°
             alu_op    = ALU_ADD;
         end
         
         7'b1100011: begin // Branch instructions (BEQ, BNE, BLT, BGE, BLTU, BGEU)
             branch = 1'b1;
-            alu_op = ALU_SUB;    // ±È½ÏÊ¹ÓÃ¼õ·¨
-            //ÏÈÄ¬ÈÏ·ÖÖ§²»Ìø×ª
+            alu_op = ALU_SUB;    // æ¯”è¾ƒä½¿ç”¨å‡æ³•
+            //å…ˆé»˜è®¤åˆ†æ”¯ä¸è·³è½¬
         end
         
         7'b1101111: begin // JAL
@@ -73,7 +73,7 @@ always @(*) begin
         end
         
         default: begin
-            // ±£³ÖÄ¬ÈÏÖµ
+            // ä¿æŒé»˜è®¤å€¼
         end
     endcase
 end
@@ -81,13 +81,13 @@ end
 endmodule
 
 module alu_control (
-    input [1:0] alu_op,        // À´×ÔÖ÷¿ØÖÆµ¥Ôª
-    input [2:0] funct3,        // Ö¸ÁîµÄfunct3×Ö¶Î
-    input [6:0] funct7,        // Ö¸ÁîµÄfunct7×Ö¶Î
+    input [1:0] alu_op,        // æ¥è‡ªä¸»æ§åˆ¶å•å…ƒ
+    input [2:0] funct3,        // æŒ‡ä»¤çš„funct3å­—æ®µ
+    input [6:0] funct7,        // æŒ‡ä»¤çš„funct7å­—æ®µ
     output reg [3:0] alu_control_out
 );
 
-// ALU¿ØÖÆĞÅºÅ¶¨Òå
+// ALUæ§åˆ¶ä¿¡å·å®šä¹‰
 parameter ALU_ADD  = 4'b0000;
 parameter ALU_SUB  = 4'b0001;
 parameter ALU_AND  = 4'b0010;
@@ -101,13 +101,13 @@ parameter ALU_SRA  = 4'b1001;
 
 always @(*) begin
     case (alu_op)
-        2'b00: // ¼Ó·¨£¨Load/Store£©
+        2'b00: // åŠ æ³•ï¼ˆLoad/Storeï¼‰
             alu_control_out = ALU_ADD;
             
-        2'b01: // ¼õ·¨£¨Branch±È½Ï£©
+        2'b01: // å‡æ³•ï¼ˆBranchæ¯”è¾ƒï¼‰
             alu_control_out = ALU_SUB;
             
-        2'b10: begin // R-typeÖ¸Áî
+        2'b10: begin // R-typeæŒ‡ä»¤
             case (funct3)
                 3'b000: // ADD (funct7[5] = 0) / SUB (funct7[5] = 1)
                     alu_control_out = (funct7[5]) ? ALU_SUB : ALU_ADD;
@@ -130,7 +130,7 @@ always @(*) begin
             endcase
         end
         
-        2'b11: begin // I-typeËãÊõÖ¸Áî
+        2'b11: begin // I-typeç®—æœ¯æŒ‡ä»¤
             case (funct3)
                 3'b000: // ADDI
                     alu_control_out = ALU_ADD;
@@ -161,11 +161,11 @@ end
 endmodule
 
 module branch_control (
-    input branch,              // À´×ÔÖ÷¿ØÖÆµ¥ÔªµÄ·ÖÖ§ĞÅºÅ
-    input [2:0] funct3,        // ·ÖÖ§Ö¸ÁîÀàĞÍ
-    input [31:0] rs1_data,     // µÚÒ»¸öÔ´¼Ä´æÆ÷Êı¾İ
-    input [31:0] rs2_data,     // µÚ¶ş¸öÔ´¼Ä´æÆ÷Êı¾İ
-    output reg branch_taken    // ·ÖÖ§ÊÇ·ñÌø×ª(0²»Ìø×ª 1Ìø×ª)
+    input branch,              // æ¥è‡ªä¸»æ§åˆ¶å•å…ƒçš„åˆ†æ”¯ä¿¡å·
+    input [2:0] funct3,        // åˆ†æ”¯æŒ‡ä»¤ç±»å‹
+    input [31:0] rs1_data,     // ç¬¬ä¸€ä¸ªæºå¯„å­˜å™¨æ•°æ®
+    input [31:0] rs2_data,     // ç¬¬äºŒä¸ªæºå¯„å­˜å™¨æ•°æ®
+    output reg branch_taken    // åˆ†æ”¯æ˜¯å¦è·³è½¬(0ä¸è·³è½¬ 1è·³è½¬)
 );
 
 always @(*) begin
@@ -189,6 +189,7 @@ always @(*) begin
                 branch_taken = 1'b0;
         endcase
     end
+    
 end
 
 endmodule
