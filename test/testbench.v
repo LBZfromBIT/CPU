@@ -89,11 +89,9 @@ end
 // 监控寄存器变化
 always @(posedge clk) begin
     if (!rst && debug_pc != 0) begin
-        $display("[Cycle] PC=0x%h, x8=0x%h, x5=%d, x6=%d, x7=%d", 
+        $display("[Cycle] PC=0x%h, x5=%d, x7=%d", 
                  debug_pc, 
-                 cpu_inst.reg_file.registers[8],   // 基地址
                  cpu_inst.reg_file.registers[5],   // 外层循环
-                 cpu_inst.reg_file.registers[6],   // 循环上限
                  cpu_inst.reg_file.registers[7]);  // 内层循环
     end
 end
