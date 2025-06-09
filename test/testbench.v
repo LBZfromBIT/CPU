@@ -288,7 +288,11 @@ always @(posedge clk) begin
                 $display("     Flushing IF/ID and ID/EX stages");
             end
         end
-          // Register file operations
+
+        // 等待一个 time-step 以统一读写时序
+        #1;
+        
+        // Register file operations
         if (DEBUG_LEVEL >= 2 && SHOW_REGISTERS) begin
             $display("  -> Register File:");
             $display("     Read: rs1_data=%9d, rs2_data=%9d", 
