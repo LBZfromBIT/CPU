@@ -27,7 +27,9 @@ end
 
 // Read operations
 // 5'b00000 is the zero,always be null
-assign read_data1 = (rs1 == 5'b00000) ? 32'h00000000 : registers[rs1];
-assign read_data2 = (rs2 == 5'b00000) ? 32'h00000000 : registers[rs2];
+assign read_data1 = (rs1 == 5'b00000) ? 32'h00000000 : 
+                    (reg_write && (rd == rs1) ? write_data : registers[rs1]);
+assign read_data2 = (rs2 == 5'b00000) ? 32'h00000000 : 
+                    (reg_write && (rd == rs2) ? write_data : registers[rs2]);
 
 endmodule

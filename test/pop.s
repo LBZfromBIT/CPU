@@ -5,7 +5,7 @@ array: .word 4,5,3,1,2    # 待排序的整数数组
 .text
 main:
     # x8记录数据区基地址
-    addi x8,x0,0x100
+    addi x8,x0,0x0
 
     # 初始化外层循环计数器
     addi x5,x0,0     # x5记录外层循环次数i

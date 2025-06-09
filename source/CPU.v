@@ -164,9 +164,9 @@ wire flush_ex_mem;                // 清空EX/MEM寄存器：异常处理
 assign pc_plus4 = pc_current + 4;
 
 // PC选择逻辑：决定下一个PC的来源
-assign pc_next = (mem_branch_taken) ? mem_branch_target :    // 分支跳转
-                 (mem_jump) ? mem_jump_target :              // 无条件跳转
-                 pc_plus4;                                   // 顺序执行
+assign pc_next = (branch_taken && ex_branch) ? branch_target :  // 分支跳转 (EX阶段)
+                 (ex_jump) ? jump_target :                       // 无条件跳转 (EX阶段)
+                 pc_plus4;                                       // 顺序执行
 
 // PC寄存器
 pc pc_reg (

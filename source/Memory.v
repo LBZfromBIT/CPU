@@ -16,7 +16,7 @@ initial begin
         imem[i] = 32'h00000013;  // NOP (addi x0, x0, 0)
     end
     
-    imem[0]  = 32'h10000413;  // addi x8,x0,0x100
+    imem[0]  = 32'h00000413;  // addi x8,x0,0x0
     imem[1]  = 32'h00000293;  // addi x5,x0,0
     imem[2]  = 32'h00400313;  // addi x6,x0,4
     imem[3]  = 32'h0462da63;  // bge x5,x6,exit_outer
@@ -71,19 +71,19 @@ initial begin
         dmem[j] = 32'h00000000;
     end
     
-    // 在地址0x100处初始化数组数据
-    dmem[64] = 32'h00000004;  // array[0] = 4  (地址0x100 = 256/4 = 64)
-    dmem[65] = 32'h00000005;  // array[1] = 5  (地址0x104 = 260/4 = 65)
-    dmem[66] = 32'h00000003;  // array[2] = 3  (地址0x108 = 264/4 = 66)
-    dmem[67] = 32'h00000001;  // array[3] = 1  (地址0x10C = 268/4 = 67)
-    dmem[68] = 32'h00000002;  // array[4] = 2  (地址0x110 = 272/4 = 68)
+    // 在地址0x0处初始化数组数据
+    dmem[0] = 32'h00000004;  // array[0] = 4  (地址0x0 = 0/4 = 0)
+    dmem[1] = 32'h00000005;  // array[1] = 5  (地址0x4 = 4/4 = 1)
+    dmem[2] = 32'h00000003;  // array[2] = 3  (地址0x8 = 8/4 = 2)
+    dmem[3] = 32'h00000001;  // array[3] = 1  (地址0xC = 12/4 = 3)
+    dmem[4] = 32'h00000002;  // array[4] = 2  (地址0x10 = 16/4 = 4)
     
     $display("数据存储器初始化完成");
-    $display("dmem[64] = %d", dmem[64]);
-    $display("dmem[65] = %d", dmem[65]);
-    $display("dmem[66] = %d", dmem[66]);
-    $display("dmem[67] = %d", dmem[67]);
-    $display("dmem[68] = %d", dmem[68]);
+    $display("dmem[0] = %d", dmem[0]);
+    $display("dmem[1] = %d", dmem[1]);
+    $display("dmem[2] = %d", dmem[2]);
+    $display("dmem[3] = %d", dmem[3]);
+    $display("dmem[4] = %d", dmem[4]);
 end
 
 // 按字对齐的地址
